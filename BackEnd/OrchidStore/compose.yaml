@@ -1,0 +1,6 @@
+﻿services:
+  orchidstore.api:
+    image: orchidstore.api
+    build:
+      context: .
+      dockerfile: OrchidStore.API/Dockerfile

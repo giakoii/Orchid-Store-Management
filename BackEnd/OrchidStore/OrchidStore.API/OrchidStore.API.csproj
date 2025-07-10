@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="NLog" Version="6.0.1" />
+        <PackageReference Include="NLog.Config" Version="4.7.15" />
+        <PackageReference Include="OpenIddict" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.Abstractions" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="7.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OrchidStore.Application\OrchidStore.Application.csproj" />
+      <ProjectReference Include="..\OrchidStore.Infrastructure\OrchidStore.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Auths\" />
+    </ItemGroup>
+
+</Project>
