@@ -22,8 +22,15 @@ builder.Services.AddOpenApi();
 
 // Register EF Core context (relational database)
 var connectionString = builder.Configuration.GetConnectionString("OrchidStoreDB");
-builder.Services.AddDbContext<OrchidStoreContext>(options =>
-    options.UseNpgsql(connectionString));
+
+builder.Services.AddDbContext<OrchidStoreContext, AppDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+    options.UseOpenIddict();
+});
+
+
+builder.Services.AddHostedService<Worker>();
 
 // Register Marten for event sourcing / document store
 builder.Services.AddMarten(options =>
@@ -44,7 +51,7 @@ builder.Services.AddMarten(options =>
 // Register MediatR for CQRS
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(AccountRegisterCommandHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(AccountRegisterCommand).Assembly);
 });
 
 // System services
@@ -55,6 +62,7 @@ builder.Services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepositor
 builder.Services.AddScoped(typeof(IQueryRepository<>), typeof(QueryRepository<>));
 
 builder.Services.AddScoped<ICommandRepository<Account>, CommandRepository<Account>>();
+builder.Services.AddScoped<ICommandRepository<Role>, CommandRepository<Role>>();
 builder.Services.AddScoped<ICommandRepository<Category>, CommandRepository<Category>>();
 builder.Services.AddScoped<ICommandRepository<Orchid>, CommandRepository<Orchid>>();
 builder.Services.AddScoped<ICommandRepository<Order>, CommandRepository<Order>>();
@@ -197,8 +205,7 @@ builder.Services.AddOpenIddict()
 
 #region ▓▓ App Host Configuration ▓▓
 
-builder.Services.AddControllers();
-builder.Services.AddHostedService<Worker>();
+builder.Services.AddControllers(); 
 builder.Services.AddAuthorization();
 
 #endregion

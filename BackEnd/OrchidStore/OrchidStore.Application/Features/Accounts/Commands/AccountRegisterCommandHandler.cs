@@ -23,10 +23,12 @@ public class AccountRegisterCommand : AbstractApiRequest, ICommand<CommandRespon
 public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterCommand, CommandResponse>
 {
     private readonly ICommandRepository<Account> _accountRepository;
+    private readonly ICommandRepository<Role> _roleRepository;
 
-    public AccountRegisterCommandHandler(ICommandRepository<Account> accountRepository)
+    public AccountRegisterCommandHandler(ICommandRepository<Account> accountRepository, ICommandRepository<Role> roleRepository)
     {
         _accountRepository = accountRepository;
+        _roleRepository = roleRepository;
     }
 
     /// <summary>
@@ -47,6 +49,12 @@ public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterComm
             return response;
         }
         
+        var role = await _roleRepository.Find(x => x.RoleName == ConstantEnum.UserRole.Customer.ToString()).FirstOrDefaultAsync();
+        if (role == null)
+        {
+            response.SetMessage(MessageId.E99999);
+            return response;
+        }
         // Begin transaction
         await _accountRepository.ExecuteInTransactionAsync(async () =>
         {
@@ -56,6 +64,7 @@ public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterComm
                 Email = request.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password, workFactor: 12),
                 AcountName = request.AccountName,
+                RoleId = role.RoleId,
             };
 
             // Context Save changes
@@ -63,7 +72,7 @@ public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterComm
             await _accountRepository.SaveChangesAsync(request.Email);
             
             // Session save changes
-            _accountRepository.Store(AccountCollection.FromWriteModel(newAccount), request.Email);
+            _accountRepository.Store(AccountCollection.FromWriteModel(newAccount, true), request.Email);
             await _accountRepository.SessionSavechanges();
         
             response.Success = true;

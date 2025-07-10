@@ -5,10 +5,6 @@ namespace OrchidStore.Infrastructure.Data.Contexts;
 
 public partial class OrchidStoreContext : DbContext
 {
-    public OrchidStoreContext()
-    {
-    }
-
     public OrchidStoreContext(DbContextOptions<OrchidStoreContext> options)
         : base(options)
     {
@@ -28,6 +24,10 @@ public partial class OrchidStoreContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql("Host=localhost;Database=OrchidStoreDB;Username=root;Password=Gi@khoi221203;Trust Server Certificate=true");
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
