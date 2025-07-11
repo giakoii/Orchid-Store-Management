@@ -2,36 +2,36 @@ using BackEnd.Utils.Const;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using OrchidStore.Application.Features.Accounts.Queries;
-using OrchidStore.API.SystemClient;
 using OrchidStore.Application.Features;
+using OrchidStore.Application.Features.Accounts.Commands;
+using OrchidStore.API.SystemClient;
 
 namespace OrchidStore.API.Controllers.Accounts;
 
 /// <summary>
-/// Controller for selecting account profile
+/// Controller for updating account
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
-public class SelectAccountProfileController : AbstractApiAsyncController<SelectAccountProfileQuery, SelectAccountProfileResponse, SelectAccountEntity>
+public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateCommand, CommandResponse, string>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    public SelectAccountProfileController(IMediator mediator, IIdentityApiClient identityApiClient)
+    public UpdateAccountController(IMediator mediator, IIdentityApiClient identityApiClient)
     {
         _mediator = mediator;
         _identityApiClient = identityApiClient;
     }
 
     /// <summary>
-    /// Incoming Get request
+    /// Incoming Put request
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpGet]
-    public override async Task<IActionResult> ProcessRequest([FromQuery] SelectAccountProfileQuery request)
+    [HttpPut]
+    public override async Task<IActionResult> ProcessRequest(AccountUpdateCommand request)
     {
-        return await ProcessRequest(request, _logger, new SelectAccountProfileResponse());
+        return await ProcessRequest(request, _logger, new CommandResponse());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class SelectAccountProfileController : AbstractApiAsyncController<SelectA
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<SelectAccountProfileResponse> Exec(SelectAccountProfileQuery request)
+    protected override async Task<CommandResponse> Exec(AccountUpdateCommand request)
     {
         return await _mediator.Send(request);
     }
@@ -50,9 +50,9 @@ public class SelectAccountProfileController : AbstractApiAsyncController<SelectA
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override SelectAccountProfileResponse ErrorCheck(SelectAccountProfileQuery request, List<DetailError> detailErrorList)
+    protected internal override CommandResponse ErrorCheck(AccountUpdateCommand request, List<DetailError> detailErrorList)
     {
-        var response = new SelectAccountProfileResponse() { Success = false };
+        var response = new CommandResponse() { Success = false };
         if (detailErrorList.Count > 0)
         {
             // Error
