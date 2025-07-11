@@ -89,17 +89,28 @@ builder.Services.AddSwaggerGen(c =>
     c.TagActionsBy(api =>
     {
         var controllerName = api.ActionDescriptor.RouteValues["controller"];
+        
+        // Handle special cases for AuthController
+        if (controllerName?.Equals("Auth", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return new[] { "Authentication - OAuth2 & OpenIddict" };
+        }
+        
         var screenCode = controllerName?.Substring(0, 1);
-
+        
         var groupName = screenCode switch
         {
-            _ => screenCode
+            "I" => "Insert - Add new records",
+            "S" => "Select - Retrieve records",
+            "U" => "Update - Modify existing records", 
+            "D" => "Delete - Remove records", 
+            _ => controllerName ?? "Default"
         };
-
+        
         return new[] { groupName };
     });
-
-    c.DocInclusionPredicate((name, api) => true);
+   
+    
     c.CustomSchemaIds(type => type.FullName);
 
     // Add JWT bearer authentication to Swagger
