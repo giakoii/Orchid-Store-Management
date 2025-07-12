@@ -41,5 +41,11 @@
     <ItemGroup>
       <Folder Include="Controllers\Auths\" />
     </ItemGroup>
+    <ItemGroup>
+        <Content Include="ConstanstCSV/MessageId.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
 
 </Project>

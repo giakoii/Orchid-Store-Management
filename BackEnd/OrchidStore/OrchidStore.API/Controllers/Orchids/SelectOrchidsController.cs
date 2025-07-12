@@ -1,39 +1,39 @@
 using BackEnd.Utils.Const;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using OrchidStore.Application.Features;
-using OrchidStore.Application.Features.Accounts.Commands;
-using OrchidStore.Application.Logics;
+using OrchidStore.Application.Features.Orchids.Queries;
 
-namespace OrchidStore.API.Controllers.Accounts;
+namespace OrchidStore.API.Controllers.Orchids;
 
 /// <summary>
-/// Controller for updating account
+/// Controller for selecting multiple orchids with filtering and pagination
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
-public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateCommand, CommandResponse, string>
+public class SelectOrchidsController : AbstractApiAsyncControllerNotToken<SelectOrchidsQuery, SelectOrchidsResponse, SelectOrchidsData>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    public UpdateAccountController(IMediator mediator, IIdentityService identityService)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="mediator"></param>
+    public SelectOrchidsController(IMediator mediator)
     {
         _mediator = mediator;
-        _identityService = identityService;
     }
 
     /// <summary>
-    /// Incoming Put request
+    /// Incoming Get request
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPut]
-    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-    public override async Task<IActionResult> ProcessRequest(AccountUpdateCommand request)
+    [HttpGet]
+    public override async Task<IActionResult> ProcessRequest([FromQuery] SelectOrchidsQuery request)
     {
-        return await ProcessRequest(request, _logger, new CommandResponse());
+        return await ProcessRequest(request, _logger, new SelectOrchidsResponse());
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateC
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<CommandResponse> Exec(AccountUpdateCommand request)
+    protected override async Task<SelectOrchidsResponse> Exec(SelectOrchidsQuery request)
     {
         return await _mediator.Send(request);
     }
@@ -52,9 +52,9 @@ public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateC
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override CommandResponse ErrorCheck(AccountUpdateCommand request, List<DetailError> detailErrorList)
+    protected internal override SelectOrchidsResponse ErrorCheck(SelectOrchidsQuery request, List<DetailError> detailErrorList)
     {
-        var response = new CommandResponse() { Success = false };
+        var response = new SelectOrchidsResponse() { Success = false };
         if (detailErrorList.Count > 0)
         {
             // Error

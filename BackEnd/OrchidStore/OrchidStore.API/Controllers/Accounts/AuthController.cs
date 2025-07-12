@@ -10,9 +10,9 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 using OrchidStore.API.Helpers;
-using OrchidStore.API.SystemClient;
 using OrchidStore.Application.Features;
 using OrchidStore.Application.Features.Accounts.Commands;
+using OrchidStore.Application.Logics;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static OpenIddict.Abstractions.OpenIddictConstants.Scopes;
 
@@ -25,14 +25,14 @@ public class AuthController : ControllerBase
     private readonly IOpenIddictScopeManager _scopeManager;
     private readonly IOpenIddictTokenManager _tokenManager;
     private readonly IMediator _mediator;
-    private readonly IIdentityApiClient _identityApiClient;
+    private readonly IIdentityService _identityService;
 
-    public AuthController(IMediator mediator, IOpenIddictScopeManager scopeManager, IOpenIddictTokenManager tokenManager, IIdentityApiClient identityApiClient)
+    public AuthController(IMediator mediator, IOpenIddictScopeManager scopeManager, IOpenIddictTokenManager tokenManager, IIdentityService identityService)
     {
         _mediator = mediator;
         _scopeManager = scopeManager;
         _tokenManager = tokenManager;
-        _identityApiClient = identityApiClient;
+        _identityService = identityService;
     }
     
     /// <summary>
@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public IActionResult SelectToken()
     {
-        var identity = _identityApiClient.GetIdentity(User);
+        var identity = _identityService.GetIdentity(User);
         var response = new SelectTokenQueryResponse { Success = false , Response = null!};
     
         if (identity == null)
@@ -278,7 +278,7 @@ public class AuthController : ControllerBase
         try
         {
             // Get the current user's claims
-            var identity = _identityApiClient.GetIdentity(User);
+            var identity = _identityService.GetIdentity(User);
 
             if (identity == null)
             {

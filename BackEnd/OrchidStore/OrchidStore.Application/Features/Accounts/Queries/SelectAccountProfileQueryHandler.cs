@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using BackEnd.Utils.Const;
+using Microsoft.EntityFrameworkCore;
 using OrchidStore.Application.CQRS;
+using OrchidStore.Application.Features;
 using OrchidStore.Application.Repositories;
 using OrchidStore.Domain.WriteModels;
 
@@ -10,6 +12,18 @@ public class SelectAccountProfileQuery : AbstractApiRequest, IQuery<SelectAccoun
 {
     [Required(ErrorMessage = "Account ID is required.")]
     public int AccountId { get; set; }
+}
+
+public class SelectAccountProfileResponse : AbstractApiResponse<SelectAccountEntity>
+{
+    public override SelectAccountEntity Response { get; set; }
+}
+
+public class SelectAccountEntity
+{
+    public int AccountId { get; set; }
+    public string AccountName { get; set; } = null!;
+    public string Email { get; set; } = null!;
 }
 
 public class SelectAccountProfileQueryHandler : IQueryHandler<SelectAccountProfileQuery, SelectAccountProfileResponse>
@@ -48,16 +62,4 @@ public class SelectAccountProfileQueryHandler : IQueryHandler<SelectAccountProfi
         response.SetMessage(MessageId.I00001);
         return response;
     }
-}
-
-public class SelectAccountProfileResponse : AbstractApiResponse<SelectAccountEntity>
-{
-    public override SelectAccountEntity Response { get; set; }
-}
-
-public class SelectAccountEntity
-{
-    public int AccountId { get; set; }
-    public string AccountName { get; set; } = null!;
-    public string Email { get; set; } = null!;
 }

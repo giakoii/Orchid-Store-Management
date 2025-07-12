@@ -7,12 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Categories\Commands\" />
-      <Folder Include="Features\Categories\Queries\" />
-      <Folder Include="Features\Orchids\Commands\" />
-      <Folder Include="Features\Orchids\Queries\" />
       <Folder Include="Mappers\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -24,6 +19,12 @@
       <PackageReference Include="MediatR" Version="13.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
       <PackageReference Include="NLog" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Http.Features">
+        <HintPath>..\..\..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\9.0.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

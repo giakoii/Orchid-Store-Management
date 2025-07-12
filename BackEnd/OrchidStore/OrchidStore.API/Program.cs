@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Abstractions;
 using OrchidStore.API;
-using OrchidStore.API.SystemClient;
 using OrchidStore.Application.Features.Accounts.Commands;
+using OrchidStore.Application.Logics;
 using OrchidStore.Application.Repositories;
 using OrchidStore.Domain.ReadModels;
 using OrchidStore.Domain.WriteModels;
 using OrchidStore.Infrastructure.Data.Contexts;
 using OrchidStore.Infrastructure.Data.Helpers;
+using OrchidStore.Infrastructure.Logics;
 using OrchidStore.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +24,16 @@ builder.Services.AddOpenApi();
 // Register EF Core context (relational database)
 var connectionString = builder.Configuration.GetConnectionString("OrchidStoreDB");
 
+// Register the DbContext with OpenIddict support
 builder.Services.AddDbContext<OrchidStoreContext, AppDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
     options.UseOpenIddict();
 });
 
+// Register Cloudinary settings from configuration
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddHostedService<Worker>();
 
@@ -54,8 +59,12 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(AccountRegisterCommand).Assembly);
 });
 
+// Register HTTP context accessor
+builder.Services.AddHttpContextAccessor();
+
 // System services
-builder.Services.AddScoped<IIdentityApiClient, IdentityApiClient>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 // Register generic and concrete repositories
 builder.Services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));

@@ -1,39 +1,40 @@
 using BackEnd.Utils.Const;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using OrchidStore.Application.Features.Categories.Queries;
 using OrchidStore.Application.Features;
-using OrchidStore.Application.Features.Accounts.Commands;
 using OrchidStore.Application.Logics;
 
-namespace OrchidStore.API.Controllers.Accounts;
+namespace OrchidStore.API.Controllers.Categories;
 
 /// <summary>
-/// Controller for updating account
+/// Controller for selecting single category
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
-public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateCommand, CommandResponse, string>
+public class SelectCategoryController : AbstractApiAsyncControllerNotToken<SelectCategoryQuery, SelectCategoryResponse, SelectCategoryEntity>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    public UpdateAccountController(IMediator mediator, IIdentityService identityService)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="mediator"></param>
+    public SelectCategoryController(IMediator mediator)
     {
         _mediator = mediator;
-        _identityService = identityService;
     }
 
     /// <summary>
-    /// Incoming Put request
+    /// Incoming Get request
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPut]
-    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-    public override async Task<IActionResult> ProcessRequest(AccountUpdateCommand request)
+    [HttpGet]
+    public override async Task<IActionResult> ProcessRequest([FromQuery] SelectCategoryQuery request)
     {
-        return await ProcessRequest(request, _logger, new CommandResponse());
+        return await ProcessRequest(request, _logger, new SelectCategoryResponse());
     }
 
     /// <summary>
@@ -41,7 +42,7 @@ public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateC
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<CommandResponse> Exec(AccountUpdateCommand request)
+    protected override async Task<SelectCategoryResponse> Exec(SelectCategoryQuery request)
     {
         return await _mediator.Send(request);
     }
@@ -52,9 +53,9 @@ public class UpdateAccountController : AbstractApiAsyncController<AccountUpdateC
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override CommandResponse ErrorCheck(AccountUpdateCommand request, List<DetailError> detailErrorList)
+    protected internal override SelectCategoryResponse ErrorCheck(SelectCategoryQuery request, List<DetailError> detailErrorList)
     {
-        var response = new CommandResponse() { Success = false };
+        var response = new SelectCategoryResponse() { Success = false };
         if (detailErrorList.Count > 0)
         {
             // Error

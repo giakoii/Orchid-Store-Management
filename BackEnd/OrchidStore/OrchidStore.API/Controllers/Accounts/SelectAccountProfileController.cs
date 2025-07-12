@@ -1,10 +1,11 @@
 using BackEnd.Utils.Const;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using OrchidStore.Application.Features.Accounts.Queries;
-using OrchidStore.API.SystemClient;
 using OrchidStore.Application.Features;
+using OrchidStore.Application.Logics;
 
 namespace OrchidStore.API.Controllers.Accounts;
 
@@ -17,10 +18,10 @@ public class SelectAccountProfileController : AbstractApiAsyncController<SelectA
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    public SelectAccountProfileController(IMediator mediator, IIdentityApiClient identityApiClient)
+    public SelectAccountProfileController(IMediator mediator, IIdentityService identityService)
     {
         _mediator = mediator;
-        _identityApiClient = identityApiClient;
+        _identityService = identityService;
     }
 
     /// <summary>
@@ -29,6 +30,7 @@ public class SelectAccountProfileController : AbstractApiAsyncController<SelectA
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpGet]
+    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public override async Task<IActionResult> ProcessRequest([FromQuery] SelectAccountProfileQuery request)
     {
         return await ProcessRequest(request, _logger, new SelectAccountProfileResponse());

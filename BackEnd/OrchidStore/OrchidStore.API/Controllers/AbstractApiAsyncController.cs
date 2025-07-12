@@ -2,9 +2,9 @@ using BackEnd.Utils.Const;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using OrchidStore.API.SystemClient;
 using OrchidStore.Application.Features;
 using OrchidStore.Application.LogConfig;
+using OrchidStore.Application.Logics;
 
 namespace OrchidStore.API.Controllers
 {
@@ -35,7 +35,7 @@ namespace OrchidStore.API.Controllers
         /// <summary>
         /// API Client to extract identity info
         /// </summary>
-        protected IIdentityApiClient _identityApiClient;
+        protected IIdentityService _identityService;
 
         /// <summary>
         /// Identity extracted from JWT
@@ -47,10 +47,10 @@ namespace OrchidStore.API.Controllers
         /// </summary>
         protected async Task<IActionResult> ProcessRequest(T request, Logger logger, U returnValue)
         {
-            // et identity from current user
-            _identityEntity = _identityApiClient.GetIdentity(User);
-
-            var loggingUtil = new LoggingUtil(logger, _identityEntity?.Email!);
+            // Get identity from current user
+            _identityEntity = _identityService.GetIdentity(User);
+                
+            var loggingUtil = new LoggingUtil(logger, _identityEntity?.Email ?? "Not authenticated");
             loggingUtil.StartLog(request);
 
             // Validate identity
@@ -62,7 +62,7 @@ namespace OrchidStore.API.Controllers
                 loggingUtil.EndLog(returnValue);
                 return Unauthorized(returnValue);
             }
-
+            
             try
             {
                 // Model validation errors
@@ -81,7 +81,18 @@ namespace OrchidStore.API.Controllers
             }
             catch (Exception ex)
             {
-                return AbstractFunction<U, V>.GetReturnValue(returnValue, loggingUtil, ex);
+                returnValue.Success = false;
+                returnValue.SetMessage(MessageId.E99999);
+                if (returnValue.DetailErrorList == null)
+                {
+                    returnValue.DetailErrorList = new List<DetailError>();
+                }
+                returnValue.DetailErrorList.Add(new DetailError
+                {
+                    MessageId = MessageId.E00000,
+                    ErrorMessage = ex.Message
+                });
+                return BadRequest(returnValue);
             }
         }
     }
