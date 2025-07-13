@@ -12,7 +12,6 @@ namespace OrchidStore.Application.Features.Orchids.Commands;
 
 public class OrchidInsertCommand : AbstractApiRequest, ICommand<CommandResponse>
 {
-    
     [Required(ErrorMessage = "Orchid name is required.")]
     public string OrchidName { get; set; } = null!;
 
@@ -49,7 +48,9 @@ public class OrchidInsertCommandHandler : ICommandHandler<OrchidInsertCommand, C
     /// <param name="categoryRepository"></param>
     /// <param name="identityService"></param>
     /// <param name="cloudinaryService"></param>
-    public OrchidInsertCommandHandler(ICommandRepository<Orchid> orchidRepository, ICommandRepository<Category> categoryRepository, IIdentityService identityService, ICloudinaryService cloudinaryService)
+    public OrchidInsertCommandHandler(ICommandRepository<Orchid> orchidRepository,
+        ICommandRepository<Category> categoryRepository, IIdentityService identityService,
+        ICloudinaryService cloudinaryService)
     {
         _orchidRepository = orchidRepository;
         _categoryRepository = categoryRepository;
@@ -67,62 +68,46 @@ public class OrchidInsertCommandHandler : ICommandHandler<OrchidInsertCommand, C
     {
         var response = new CommandResponse { Success = false };
 
-        try
+        // Get current user email
+        var currentUserEmail = _identityService.GetCurrentUser().Email;
+
+        // Validate category exists
+        var categoryExists = await _categoryRepository.Find(x => x.CategoryId == request.CategoryId && x.IsActive).FirstOrDefaultAsync(cancellationToken);
+        if (categoryExists == null)
         {
-            // Get current user email
-            var currentUserEmail = _identityService.GetCurrentUser().Email;
-
-            // Validate category exists
-            var categoryExists = await _categoryRepository.Find(x => x.CategoryId == request.CategoryId && x.IsActive).FirstOrDefaultAsync(cancellationToken);
-            if (categoryExists == null)
-            {
-                response.SetMessage(MessageId.I00000, "Category not found or inactive.");
-                return response;
-            }
-
-            // Check if orchid name already exists
-            var orchidExists = await _orchidRepository.Find(x => x.OrchidName == request.OrchidName).FirstOrDefaultAsync(cancellationToken);
-            if (orchidExists != null)
-            {
-                response.SetMessage(MessageId.I00000, "Orchid name already exists.");
-                return response;
-            }
-
-            // Begin transaction
-            await _orchidRepository.ExecuteInTransactionAsync(async () =>
-            {
-                // Create new orchid
-                var newOrchid = new Orchid
-                {
-                    OrchidName = request.OrchidName,
-                    OrchidDescription = request.OrchidDescription,
-                    Price = request.Price,
-                    CategoryId = request.CategoryId,
-                    IsNatural = request.IsNatural,
-                };
-                
-                // Upload image to Cloudinary
-                newOrchid.OrchidUrl = await _cloudinaryService.UploadImageAsync(request.OrchidImage);
-
-                // Context save changes
-                await _orchidRepository.AddAsync(newOrchid);
-                await _orchidRepository.SaveChangesAsync(currentUserEmail);
-
-                // Session save changes
-                _orchidRepository.Store(OrchidCollection.FromWriteModel(newOrchid, true), currentUserEmail);
-                await _orchidRepository.SessionSavechanges();
-                
-                // True
-                response.Success = true;
-                response.SetMessage(MessageId.I00001);
-                return true;
-            });
-        }
-        catch (Exception ex)
-        {
-            response.SetMessage(MessageId.E10000, $"Error creating orchid: {ex.Message}");
+            response.SetMessage(MessageId.I00000, "Category not found or inactive.");
+            return response;
         }
 
+        // Begin transaction
+        await _orchidRepository.ExecuteInTransactionAsync(async () =>
+        {
+            // Create new orchid
+            var newOrchid = new Orchid
+            {
+                OrchidName = request.OrchidName,
+                OrchidDescription = request.OrchidDescription,
+                Price = request.Price,
+                CategoryId = request.CategoryId,
+                IsNatural = request.IsNatural,
+            };
+
+            // Upload image to Cloudinary
+            newOrchid.OrchidUrl = await _cloudinaryService.UploadImageAsync(request.OrchidImage);
+
+            // Context save changes
+            await _orchidRepository.AddAsync(newOrchid);
+            await _orchidRepository.SaveChangesAsync(currentUserEmail);
+
+            // Session save changes
+            _orchidRepository.Store(OrchidCollection.FromWriteModel(newOrchid, true), currentUserEmail);
+            await _orchidRepository.SessionSavechanges();
+
+            // True
+            response.Success = true;
+            response.SetMessage(MessageId.I00001);
+            return true;
+        });
         return response;
     }
 }

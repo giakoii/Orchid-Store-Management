@@ -20,8 +20,6 @@ public static class EntityMetadataHelper
             if (!isModified)
             {
                 TrySetProperty(type, entity, "IsActive", true);
-                TrySetProperty(type, entity, "CreatedAt", now);
-                TrySetProperty(type, entity, "CreatedBy", updatedBy);
             }
             else // Modified
             {
@@ -35,6 +33,8 @@ public static class EntityMetadataHelper
                 }
             }
 
+            TrySetProperty(type, entity, "CreatedAt", now);
+            TrySetProperty(type, entity, "CreatedBy", updatedBy);
             TrySetProperty(type, entity, "UpdatedAt", now);
             TrySetProperty(type, entity, "UpdatedBy", updatedBy);
         }

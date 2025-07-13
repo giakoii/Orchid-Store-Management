@@ -25,8 +25,7 @@ public class SelectCategoryQueryHandler : IQueryHandler<SelectCategoryQuery, Sel
     {
         var response = new SelectCategoryResponse { Success = false };
 
-        var category = await _categoryRepository.FindOneAsync(x => x.CategoryId == request.CategoryId);
-
+        var category = await _categoryRepository.FindOneAsync(x => x.CategoryId == request.CategoryId && x.IsActive);
         if (category == null)
         {
             response.SetMessage(MessageId.I00000, "Category not found.");

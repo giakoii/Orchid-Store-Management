@@ -3,18 +3,19 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using OpenIddict.Validation.AspNetCore;
 using OrchidStore.Application.Features;
-using OrchidStore.Application.Features.Orchids.Commands;
+using OrchidStore.Application.Features.Categories.Commands;
 using OrchidStore.Application.Logics;
 
 namespace OrchidStore.API.Controllers.Categories;
 
 /// <summary>
-/// DeleteOrchidController - Deletes an orchid.
+/// DeleteCategoryController - Deletes an orchid.
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
-public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidDeleteCommand, CommandResponse, string>
+public class DeleteCategoryController : AbstractApiAsyncController<CategoryDeleteCommand, CommandResponse, string>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     
@@ -23,7 +24,7 @@ public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidD
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="identityService"></param>
-    public DeleteOrchidController(IMediator mediator, IIdentityService identityService)
+    public DeleteCategoryController(IMediator mediator, IIdentityService identityService)
     {
         _mediator = mediator;
         _identityService = identityService;
@@ -35,8 +36,8 @@ public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidD
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPatch]
-    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-    public override async Task<IActionResult> ProcessRequest(OrchidDeleteCommand request)
+    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+    public override async Task<IActionResult> ProcessRequest(CategoryDeleteCommand request)
     {
         return await ProcessRequest(request, _logger, new CommandResponse());
     }
@@ -46,7 +47,7 @@ public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidD
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<CommandResponse> Exec(OrchidDeleteCommand request)
+    protected override async Task<CommandResponse> Exec(CategoryDeleteCommand request)
     {
         return await _mediator.Send(request);
     }
@@ -57,7 +58,7 @@ public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidD
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override CommandResponse ErrorCheck(OrchidDeleteCommand request, List<DetailError> detailErrorList)
+    protected internal override CommandResponse ErrorCheck(CategoryDeleteCommand request, List<DetailError> detailErrorList)
     {
         var response = new CommandResponse() { Success = false };
         if (detailErrorList.Count > 0)

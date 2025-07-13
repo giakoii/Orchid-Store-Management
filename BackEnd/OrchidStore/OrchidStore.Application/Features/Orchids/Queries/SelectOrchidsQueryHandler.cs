@@ -5,6 +5,17 @@ using OrchidStore.Domain.ReadModels;
 
 namespace OrchidStore.Application.Features.Orchids.Queries;
 
+public class SelectOrchidsQuery : AbstractApiRequest, IQuery<SelectOrchidsResponse>
+{
+    public int? CategoryId { get; set; }
+    public bool? IsNatural { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+    public string? SearchName { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
 public class SelectOrchidsQueryHandler : IQueryHandler<SelectOrchidsQuery, SelectOrchidsResponse>
 {
     private readonly IQueryRepository<OrchidCollection> _orchidRepository;
@@ -19,24 +30,19 @@ public class SelectOrchidsQueryHandler : IQueryHandler<SelectOrchidsQuery, Selec
         var response = new SelectOrchidsResponse { Success = false };
 
         // Get all orchids
-        var query = await _orchidRepository.FindAllAsync(x => true);
+        var query = await _orchidRepository.FindAllAsync(x => x.IsActive);
 
         // Apply filters
         if (request.CategoryId.HasValue)
         {
-            query = query.Where(x => x.CategoryId == request.CategoryId.Value).ToList();
+            query = query.Where(x => x.Category.CategoryId == request.CategoryId).ToList();
         }
 
         if (request.IsNatural.HasValue)
         {
             query = query.Where(x => x.IsNatural == request.IsNatural.Value).ToList();
         }
-
-        if (request.IsActive.HasValue)
-        {
-            query = query.Where(x => x.IsActive == request.IsActive.Value).ToList();
-        }
-
+        
         if (request.MinPrice.HasValue)
         {
             query = query.Where(x => x.Price >= request.MinPrice.Value).ToList();

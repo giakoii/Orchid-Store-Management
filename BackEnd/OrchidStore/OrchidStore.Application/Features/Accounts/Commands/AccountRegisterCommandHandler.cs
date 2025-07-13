@@ -50,6 +50,7 @@ public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterComm
             return response;
         }
         
+        // Validate role
         var role = await _roleRepository.Find(x => x.RoleName == ConstantEnum.UserRole.Customer.ToString()).FirstOrDefaultAsync();
         if (role == null)
         {

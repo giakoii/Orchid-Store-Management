@@ -61,9 +61,9 @@ public class CommandRepository<TEntity>(AppDbContext context, IDocumentSession s
     /// <summary>
     /// Add entity to the Marten session
     /// </summary>
-    public void Store<TCollection>(TCollection entity, string updatedBy, bool isModified = false) where TCollection : class
+    public void Store<TCollection>(TCollection entity, string updatedBy, bool isModified = false, bool needLogicalDelete = false) where TCollection : class
     {
-        EntityMetadataHelper.SetCommonValuesForMarten(new List<object> { entity }, updatedBy, isModified);
+        EntityMetadataHelper.SetCommonValuesForMarten(new List<object> { entity }, updatedBy, isModified, needLogicalDelete);
         session.Store(entity);
     }
 
@@ -71,9 +71,9 @@ public class CommandRepository<TEntity>(AppDbContext context, IDocumentSession s
     /// Add a range of entities
     /// </summary>
     /// <param name="entities"></param>
-    public void StoreRange<TCollection>(List<TCollection> entities, string updatedBy, bool isModified = false) where TCollection : class
+    public void StoreRange<TCollection>(List<TCollection> entities, string updatedBy, bool isModified = false, bool needLogicalDelete = false) where TCollection : class
     {
-        EntityMetadataHelper.SetCommonValuesForMarten(entities.Cast<object>().ToList(), updatedBy, isModified);
+        EntityMetadataHelper.SetCommonValuesForMarten(entities.Cast<object>().ToList(), updatedBy, isModified, needLogicalDelete);
         foreach (var entity in entities)
         {
             session.Store(entity);

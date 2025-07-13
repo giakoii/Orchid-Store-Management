@@ -46,9 +46,7 @@ public class OrchidUpdateCommandHandler : ICommandHandler<OrchidUpdateCommand, C
     /// <param name="categoryRepository"></param>
     /// <param name="cloudinaryService"></param>
     /// <param name="identityService"></param>
-    public OrchidUpdateCommandHandler(ICommandRepository<Orchid> orchidRepository,
-        ICommandRepository<Category> categoryRepository, ICloudinaryService cloudinaryService,
-        IIdentityService identityService)
+    public OrchidUpdateCommandHandler(ICommandRepository<Orchid> orchidRepository, ICommandRepository<Category> categoryRepository, ICloudinaryService cloudinaryService, IIdentityService identityService)
     {
         _orchidRepository = orchidRepository;
         _categoryRepository = categoryRepository;
@@ -70,8 +68,7 @@ public class OrchidUpdateCommandHandler : ICommandHandler<OrchidUpdateCommand, C
         var currentEmail = _identityService.GetCurrentUser()?.Email;
 
         // Find existing orchid
-        var existingOrchid = await _orchidRepository.Find(x => x.OrchidId == request.OrchidId)
-            .FirstOrDefaultAsync(cancellationToken);
+        var existingOrchid = await _orchidRepository.Find(x => x.OrchidId == request.OrchidId).FirstOrDefaultAsync(cancellationToken);
         if (existingOrchid == null)
         {
             response.SetMessage(MessageId.I00000, "Orchid not found.");

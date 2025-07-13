@@ -151,9 +151,6 @@ public class AuthController : ControllerBase
                     case Claims.Email:
                         identity.SetClaim(Claims.Email, claim.Value, Destinations.AccessToken);
                         break;
-                    case Claims.PhoneNumber:
-                        identity.SetClaim(Claims.PhoneNumber, claim.Value, Destinations.AccessToken);
-                        break;
                     case Claims.Role:
                         identity.SetClaim(Claims.Role, claim.Value, Destinations.AccessToken);
                         break;

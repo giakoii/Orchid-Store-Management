@@ -41,8 +41,7 @@ public class CategoryInsertCommandHandler : ICommandHandler<CategoryInsertComman
         var currentUser = _identityService.GetCurrentUser();
 
         // Check if category name already exists
-        var categoryExists = await _categoryRepository.Find(x => x.CategoryName == request.CategoryName)
-            .FirstOrDefaultAsync(cancellationToken);
+        var categoryExists = await _categoryRepository.Find(x => x.CategoryName == request.CategoryName && x.IsActive).FirstOrDefaultAsync(cancellationToken);
         if (categoryExists != null)
         {
             response.SetMessage(MessageId.I00000, "Category name already exists.");

@@ -11,26 +11,26 @@ namespace OrchidStore.Application.Features.Categories.Commands;
 
 public class CategoryDeleteCommand : AbstractApiRequest, ICommand<CommandResponse>
 {
-    [Required(ErrorMessage = "Orchid ID is required.")]
-    public int OrchidId { get; set; }
+    [Required(ErrorMessage = "Category ID is required.")]
+    public int CategoryId { get; set; }
 }
 
 /// <summary>
 /// Command handler for deleting an orchid.
 /// </summary>
-public class OrchidDeleteCommandHandler : ICommandHandler<CategoryDeleteCommand, CommandResponse>
+public class CategoryDeleteCommandHandler : ICommandHandler<CategoryDeleteCommand, CommandResponse>
 {
-    private readonly ICommandRepository<Orchid> _orchidRepository;
+    private readonly ICommandRepository<Category> _categoryRepository;
     private readonly IIdentityService _identityService;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="orchidRepository"></param>
+    /// <param name="categoryRepository"></param>
     /// <param name="identityService"></param>
-    public OrchidDeleteCommandHandler(ICommandRepository<Orchid> orchidRepository, IIdentityService identityService)
+    public CategoryDeleteCommandHandler(ICommandRepository<Category> categoryRepository, IIdentityService identityService)
     {
-        _orchidRepository = orchidRepository;
+        _categoryRepository = categoryRepository;
         _identityService = identityService;
     }
 
@@ -45,24 +45,24 @@ public class OrchidDeleteCommandHandler : ICommandHandler<CategoryDeleteCommand,
         var response = new CommandResponse { Success = false };
         var userEmail = _identityService.GetCurrentUser().Email;
         
-        // Validate OrchidId
-        var orchidExists = await _orchidRepository.Find(x => x.OrchidId == request.OrchidId).FirstOrDefaultAsync();
-        if (orchidExists == null)
+        // Validate CategoryId
+        var categoryExist = await _categoryRepository.Find(x => x.CategoryId == request.CategoryId).FirstOrDefaultAsync();
+        if (categoryExist == null)
         {
-            response.SetMessage(MessageId.I00000, "Orchid not found.");
+            response.SetMessage(MessageId.I00000, "Category not found.");
             return response;
         }
         
         // Begin transaction
-        await _orchidRepository.ExecuteInTransactionAsync(async () =>
+        await _categoryRepository.ExecuteInTransactionAsync(async () =>
         {
             // Mark the orchid as deleted
-            _orchidRepository.Update(orchidExists);
-            await _orchidRepository.SaveChangesAsync(userEmail, true);
+            _categoryRepository.Update(categoryExist);
+            await _categoryRepository.SaveChangesAsync(userEmail, true);
             
             // Soft delete the orchid in collection
-            _orchidRepository.Store(OrchidCollection.FromWriteModel(orchidExists, true), userEmail, true, true);
-            await _orchidRepository.SessionSavechanges();
+            _categoryRepository.Store(CategoryCollection.FromWriteModel(categoryExist, true), userEmail, true, true);
+            await _categoryRepository.SessionSavechanges();
             
             // True
             response.Success = true;
