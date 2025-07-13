@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { API_CONFIG, buildApiUrl } from '@/config/api';
 import { Orchid, Category, OrchidResponse, CategoryResponse } from '@/types/orchid';
+import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 
 export default function HomePage() {
@@ -17,6 +19,13 @@ export default function HomePage() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [pageSize] = useState(12); // 12 orchids per page
+
+    // Cart functionality
+    const { addToCart } = useCart();
+    const [addingToCart, setAddingToCart] = useState<number | null>(null);
+
+    // Router instance
+    const router = useRouter();
 
     // Fetch categories
     const fetchCategories = async () => {
@@ -84,6 +93,17 @@ export default function HomePage() {
             style: 'currency',
             currency: 'VND'
         }).format(price);
+    };
+
+    const handleAddToCart = async (orchid: Orchid) => {
+        setAddingToCart(orchid.orchidId);
+        try {
+            addToCart(orchid, 1);
+            // Add a small delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
+        } finally {
+            setAddingToCart(null);
+        }
     };
 
     return (
@@ -178,12 +198,41 @@ export default function HomePage() {
                                         <p className="text-gray-600 mb-4 line-clamp-2">
                                             {orchid.orchidDescription}
                                         </p>
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between mb-4">
                                             <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                                                 {formatPrice(orchid.price)}
                                             </span>
-                                            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-md">
-                                                Xem chi tiết
+                                        </div>
+
+                                        {/* Action buttons */}
+                                        <div className="flex space-x-2">
+                                            <button
+                                                onClick={() => handleAddToCart(orchid)}
+                                                disabled={addingToCart === orchid.orchidId}
+                                                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-md disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+                                            >
+                                                {addingToCart === orchid.orchidId ? (
+                                                    <div className="flex items-center">
+                                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                            <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                                        </svg>
+                                                        Đang thêm...
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center">
+                                                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                        </svg>
+                                                        Thêm vào giỏ
+                                                    </div>
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/orchid/${orchid.orchidId}`)}
+                                                className="px-4 py-2 border border-purple-300 text-purple-600 rounded-full hover:bg-purple-50 transition-all duration-300"
+                                            >
+                                                Chi tiết
                                             </button>
                                         </div>
                                     </div>

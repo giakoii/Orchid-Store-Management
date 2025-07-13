@@ -7,7 +7,8 @@ export const API_CONFIG = {
     SELECT_CATEGORIES: '/SelectCategories',
     INSERT_ACCOUNT: '/InsertAccount',
     SELECT_ACCOUNT_PROFILE: '/SelectAccountProfile',
-    SELECT_TOKEN: '/Auth/SelectToken'
+    SELECT_TOKEN: '/Auth/SelectToken',
+    INSERT_ORDER: '/InsertOrder'
   },
   AUTH_ENDPOINTS: {
     TOKEN: '/connect/token',
