@@ -11,6 +11,7 @@ namespace OrchidStore.Application.Features.Accounts.Commands;
 public class AccountRegisterCommand : AbstractApiRequest, ICommand<CommandResponse>
 {
     [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
     public string Email { get; set; }
     
     [Required(ErrorMessage = "Password is required.")]
@@ -49,6 +50,7 @@ public class AccountRegisterCommandHandler : ICommandHandler<AccountRegisterComm
             return response;
         }
         
+        // Validate role
         var role = await _roleRepository.Find(x => x.RoleName == ConstantEnum.UserRole.Customer.ToString()).FirstOrDefaultAsync();
         if (role == null)
         {

@@ -1,4 +1,4 @@
-namespace OrchidStore.API.SystemClient;
+namespace OrchidStore.Application.Logics;
 
 public class IdentityEntity
 {

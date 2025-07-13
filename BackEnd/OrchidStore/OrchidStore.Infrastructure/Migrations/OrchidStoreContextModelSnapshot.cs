@@ -361,12 +361,12 @@ namespace OrchidStore.Infrastructure.Migrations
 
             modelBuilder.Entity("OrchidStore.Domain.WriteModels.Orchid", b =>
                 {
-                    b.Property<int>("OrchidId")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("orchid_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrchidId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer")
@@ -425,7 +425,7 @@ namespace OrchidStore.Infrastructure.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("updated_by");
 
-                    b.HasKey("OrchidId")
+                    b.HasKey("CategoryId")
                         .HasName("orchids_pkey");
 
                     b.HasIndex("CategoryId");
@@ -528,7 +528,7 @@ namespace OrchidStore.Infrastructure.Migrations
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
-                    b.Property<int>("OrchidId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("integer")
                         .HasColumnName("orchid_id");
 
@@ -560,7 +560,7 @@ namespace OrchidStore.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("order_details_pkey");
 
-                    b.HasIndex("OrchidId");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("OrderId");
 
@@ -663,7 +663,7 @@ namespace OrchidStore.Infrastructure.Migrations
                 {
                     b.HasOne("OrchidStore.Domain.WriteModels.Orchid", "Orchid")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrchidId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_orchid");

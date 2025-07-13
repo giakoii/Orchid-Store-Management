@@ -37,9 +37,11 @@
       <ProjectReference Include="..\OrchidStore.Application\OrchidStore.Application.csproj" />
       <ProjectReference Include="..\OrchidStore.Infrastructure\OrchidStore.Infrastructure.csproj" />
     </ItemGroup>
-
     <ItemGroup>
-      <Folder Include="Controllers\Auths\" />
+        <Content Include="ConstanstCSV/MessageId.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
