@@ -6,6 +6,7 @@ using NLog;
 using OrchidStore.Application.Features;
 using OrchidStore.Application.Features.Orchids.Commands;
 using OrchidStore.Application.Logics;
+using OrchidStore.Application.Utils.Const;
 
 namespace OrchidStore.API.Controllers.Orchids;
 
@@ -30,7 +31,7 @@ public class InsertOrchidController : AbstractApiAsyncController<OrchidInsertCom
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public override async Task<IActionResult> ProcessRequest(OrchidInsertCommand request)
     {
         return await ProcessRequest(request, _logger, new CommandResponse());

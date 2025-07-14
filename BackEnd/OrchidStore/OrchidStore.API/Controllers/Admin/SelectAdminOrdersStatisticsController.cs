@@ -5,42 +5,37 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using OpenIddict.Validation.AspNetCore;
 using OrchidStore.Application.Features;
-using OrchidStore.Application.Features.Categories.Commands;
+using OrchidStore.Application.Features.Admin.Queries;
 using OrchidStore.Application.Logics;
 using OrchidStore.Application.Utils.Const;
 
-namespace OrchidStore.API.Controllers.Categories;
+namespace OrchidStore.API.Controllers.Admin;
 
 /// <summary>
-/// DeleteCategoryController - Deletes an orchid.
+/// Controller for selecting admin orders statistics
 /// </summary>
 [ApiController]
-[Route("api/v1/[controller]")]
-public class DeleteCategoryController : AbstractApiAsyncController<CategoryDeleteCommand, CommandResponse, string>
+[Route("api/v1/admin/[controller]")]
+public class SelectAdminOrdersStatisticsController : AbstractApiAsyncController<AdminOrdersStatisticsSelectQuery, AdminOrdersStatisticsSelectQueryResponse, AdminOrdersStatisticsEntity>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="mediator"></param>
-    /// <param name="identityService"></param>
-    public DeleteCategoryController(IMediator mediator, IIdentityService identityService)
+
+    public SelectAdminOrdersStatisticsController(IMediator mediator, IIdentityService identityService)
     {
         _mediator = mediator;
         _identityService = identityService;
     }
-    
+
     /// <summary>
-    /// Incoming Patch
+    /// Incoming Get request
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPatch]
-    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]   
-    public override async Task<IActionResult> ProcessRequest(CategoryDeleteCommand request)
+    [HttpGet]
+    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]   
+    public override async Task<IActionResult> ProcessRequest([FromQuery] AdminOrdersStatisticsSelectQuery request)
     {
-        return await ProcessRequest(request, _logger, new CommandResponse());
+        return await ProcessRequest(request, _logger, new AdminOrdersStatisticsSelectQueryResponse());
     }
 
     /// <summary>
@@ -48,7 +43,7 @@ public class DeleteCategoryController : AbstractApiAsyncController<CategoryDelet
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<CommandResponse> Exec(CategoryDeleteCommand request)
+    protected override async Task<AdminOrdersStatisticsSelectQueryResponse> Exec(AdminOrdersStatisticsSelectQuery request)
     {
         return await _mediator.Send(request);
     }
@@ -59,9 +54,9 @@ public class DeleteCategoryController : AbstractApiAsyncController<CategoryDelet
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override CommandResponse ErrorCheck(CategoryDeleteCommand request, List<DetailError> detailErrorList)
+    protected internal override AdminOrdersStatisticsSelectQueryResponse ErrorCheck(AdminOrdersStatisticsSelectQuery request, List<DetailError> detailErrorList)
     {
-        var response = new CommandResponse() { Success = false };
+        var response = new AdminOrdersStatisticsSelectQueryResponse() { Success = false };
         if (detailErrorList.Count > 0)
         {
             // Error

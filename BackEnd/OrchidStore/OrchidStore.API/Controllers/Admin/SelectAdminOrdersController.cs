@@ -3,38 +3,39 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using OpenIddict.Validation.AspNetCore;
 using OrchidStore.Application.Features;
-using OrchidStore.Application.Features.Categories.Commands;
+using OrchidStore.Application.Features.Admin.Queries;
 using OrchidStore.Application.Logics;
 using OrchidStore.Application.Utils.Const;
 
-namespace OrchidStore.API.Controllers.Categories;
+namespace OrchidStore.API.Controllers.Admin;
 
 /// <summary>
-/// Controller for inserting category
+/// Controller for selecting admin orders list
 /// </summary>
 [ApiController]
-[Route("api/v1/[controller]")]
-public class InsertCategoryController : AbstractApiAsyncController<CategoryInsertCommand, CommandResponse, string>
+[Route("api/v1/admin/[controller]")]
+public class SelectAdminOrdersController : AbstractApiAsyncController<AdminOrdersSelectQuery, AdminOrdersSelectQueryResponse, AdminOrdersSelectEntity>
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    public InsertCategoryController(IMediator mediator, IIdentityService identityService)
+    public SelectAdminOrdersController(IMediator mediator, IIdentityService identityService)
     {
         _mediator = mediator;
         _identityService = identityService;
     }
 
     /// <summary>
-    /// Incoming Post request
+    /// Incoming Get request
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPost]
-    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]   
-    public override async Task<IActionResult> ProcessRequest(CategoryInsertCommand request)
+    [HttpGet]
+    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]   
+    public override async Task<IActionResult> ProcessRequest([FromQuery] AdminOrdersSelectQuery request)
     {
-        return await ProcessRequest(request, _logger, new CommandResponse());
+        return await ProcessRequest(request, _logger, new AdminOrdersSelectQueryResponse());
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ public class InsertCategoryController : AbstractApiAsyncController<CategoryInser
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    protected override async Task<CommandResponse> Exec(CategoryInsertCommand request)
+    protected override async Task<AdminOrdersSelectQueryResponse> Exec(AdminOrdersSelectQuery request)
     {
         return await _mediator.Send(request);
     }
@@ -53,9 +54,9 @@ public class InsertCategoryController : AbstractApiAsyncController<CategoryInser
     /// <param name="request"></param>
     /// <param name="detailErrorList"></param>
     /// <returns></returns>
-    protected internal override CommandResponse ErrorCheck(CategoryInsertCommand request, List<DetailError> detailErrorList)
+    protected internal override AdminOrdersSelectQueryResponse ErrorCheck(AdminOrdersSelectQuery request, List<DetailError> detailErrorList)
     {
-        var response = new CommandResponse() { Success = false };
+        var response = new AdminOrdersSelectQueryResponse() { Success = false };
         if (detailErrorList.Count > 0)
         {
             // Error
