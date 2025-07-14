@@ -35,6 +35,8 @@ builder.Services.AddDbContext<OrchidStoreContext, AppDbContext>(options =>
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
 
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+
 builder.Services.AddHostedService<Worker>();
 
 // Register Marten for event sourcing / document store
@@ -65,6 +67,7 @@ builder.Services.AddHttpContextAccessor();
 // System services
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IPaymentLogic, PaymentService>();
 
 // Register generic and concrete repositories
 builder.Services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));
