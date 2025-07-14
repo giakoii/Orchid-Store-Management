@@ -9,7 +9,19 @@ export const API_CONFIG = {
     SELECT_ACCOUNT_PROFILE: '/SelectAccountProfile',
     SELECT_TOKEN: '/Auth/SelectToken',
     INSERT_ORDER: '/InsertOrder',
-    PAYMENT_CALLBACK: '/PaymentOrderCallback'
+    PAYMENT_CALLBACK: '/PaymentOrderCallback',
+    // Admin Orchid Management
+    INSERT_ORCHID: '/InsertOrchid',
+    UPDATE_ORCHID: '/UpdateOrchid',
+    DELETE_ORCHID: '/DeleteOrchid',
+    // Admin Category Management
+    INSERT_CATEGORY: '/InsertCategory',
+    UPDATE_CATEGORY: '/UpdateCategory',
+    DELETE_CATEGORY: '/DeleteCategory',
+    // Admin Analytics
+    ADMIN_BEST_SELLING: '/admin/SelectAdminBestSellingOrchids',
+    ADMIN_ORDERS: '/admin/SelectAdminOrders',
+    ADMIN_STATISTICS: '/admin/SelectAdminOrdersStatistics'
   },
   AUTH_ENDPOINTS: {
     TOKEN: '/connect/token',

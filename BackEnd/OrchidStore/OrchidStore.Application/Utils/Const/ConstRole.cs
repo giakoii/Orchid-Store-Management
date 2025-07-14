@@ -1,4 +1,4 @@
-namespace BackEnd.Utils.Const;
+namespace OrchidStore.Application.Utils.Const;
 
 public static class ConstRole
 {

@@ -6,6 +6,7 @@ using NLog;
 using OrchidStore.Application.Features;
 using OrchidStore.Application.Features.Orchids.Commands;
 using OrchidStore.Application.Logics;
+using OrchidStore.Application.Utils.Const;
 
 namespace OrchidStore.API.Controllers.Orchids;
 
@@ -35,7 +36,7 @@ public partial class DeleteOrchidController : AbstractApiAsyncController<OrchidD
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPatch]
-    [Authorize(AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+    [Authorize(Roles = ConstRole.Admin, AuthenticationSchemes = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]   
     public override async Task<IActionResult> ProcessRequest(OrchidDeleteCommand request)
     {
         return await ProcessRequest(request, _logger, new CommandResponse());
