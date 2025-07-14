@@ -25,6 +25,7 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
       <PackageReference Include="OpenIddict.Abstractions" Version="7.0.0" />
       <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.0.0" />
+      <PackageReference Include="RestSharp" Version="112.0.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,16 +2,20 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
+import Cart from './Cart';
 
 export default function Header() {
-
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { isAuthenticated, user, role, logout, authReady } = useAuth();
+  const { cart } = useCart();
+
   if (!authReady) {
     return (
         <div className="text-center py-6">
@@ -59,8 +63,24 @@ export default function Header() {
               </p>
             </div>
 
-            {/* Auth Section */}
-            <div className="absolute right-4 top-6">
+            {/* Right Section - Cart & Auth */}
+            <div className="absolute right-4 top-6 flex items-center space-x-4">
+              {/* Cart Icon */}
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-3 bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 rounded-full transition-all duration-300"
+              >
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {cart.totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                    {cart.totalItems > 99 ? '99+' : cart.totalItems}
+                  </span>
+                )}
+              </button>
+
+              {/* Auth Section */}
               {isAuthenticated && user ? (
                 <div className="relative">
                   <button
@@ -154,6 +174,12 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* Cart Component */}
+      <Cart
+        isOpen={isCartOpen}
+        onCloseAction={() => setIsCartOpen(false)}
+      />
 
       {/* Auth Modals */}
       <LoginModal
