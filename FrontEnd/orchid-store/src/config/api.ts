@@ -8,7 +8,8 @@ export const API_CONFIG = {
     INSERT_ACCOUNT: '/InsertAccount',
     SELECT_ACCOUNT_PROFILE: '/SelectAccountProfile',
     SELECT_TOKEN: '/Auth/SelectToken',
-    INSERT_ORDER: '/InsertOrder'
+    INSERT_ORDER: '/InsertOrder',
+    PAYMENT_CALLBACK: '/PaymentOrderCallback'
   },
   AUTH_ENDPOINTS: {
     TOKEN: '/connect/token',
