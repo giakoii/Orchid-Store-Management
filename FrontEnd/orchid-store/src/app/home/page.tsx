@@ -6,6 +6,7 @@ import { API_CONFIG, buildApiUrl } from '@/config/api';
 import { Orchid, Category, OrchidResponse, CategoryResponse } from '@/types/orchid';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
+import { formatCurrency } from '@/utils/format';
 
 export default function HomePage() {
     const [orchids, setOrchids] = useState<Orchid[]>([]);
@@ -86,13 +87,6 @@ export default function HomePage() {
             // Scroll to top when page changes
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    };
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
     };
 
     const handleAddToCart = async (orchid: Orchid) => {
@@ -200,7 +194,7 @@ export default function HomePage() {
                                         </p>
                                         <div className="flex items-center justify-between mb-4">
                                             <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                                {formatPrice(orchid.price)}
+                                                {formatCurrency(orchid.price)}
                                             </span>
                                         </div>
 

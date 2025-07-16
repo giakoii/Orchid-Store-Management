@@ -77,7 +77,7 @@ public class SelectOrchidsQueryHandler : IQueryHandler<SelectOrchidsQuery, Selec
                 OrchidUrl = orchid.OrchidUrl,
                 Price = orchid.Price,
                 IsNatural = orchid.IsNatural,
-                CategoryId = orchid.CategoryId,
+                CategoryId = orchid.Category.CategoryId,
                 CategoryName = orchid.Category?.CategoryName!,
                 CreatedAt = orchid.CreatedAt,
             }).ToList(),

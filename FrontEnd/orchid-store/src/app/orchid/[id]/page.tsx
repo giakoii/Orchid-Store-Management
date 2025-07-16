@@ -6,6 +6,7 @@ import { API_CONFIG, buildApiUrl } from '@/config/api';
 import { Orchid } from '@/types/orchid';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
+import { formatCurrency } from '@/utils/format';
 
 interface OrchidDetailResponse {
     success: boolean;
@@ -49,13 +50,6 @@ export default function OrchidDetailPage() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
     };
 
     const handleAddToCart = async () => {
@@ -176,7 +170,7 @@ export default function OrchidDetailPage() {
                         {/* Price */}
                         <div className="border-t border-b border-gray-200 py-6">
                             <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                {formatPrice(orchid.price)}
+                                {formatCurrency(orchid.price)}
                             </div>
                             <p className="text-gray-600 mt-2">Giá đã bao gồm VAT</p>
                         </div>
@@ -238,7 +232,7 @@ export default function OrchidDetailPage() {
                                     </div>
                                 </div>
                                 <div className="text-lg font-semibold text-gray-900">
-                                    Tổng: {formatPrice(orchid.price * quantity)}
+                                    Tổng: {formatCurrency(orchid.price * quantity)}
                                 </div>
                             </div>
 

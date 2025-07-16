@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using BackEnd.Utils.Const;
 using OrchidStore.Application.CQRS;
+using OrchidStore.Application.Logics;
 using OrchidStore.Application.Repositories;
 using OrchidStore.Domain.ReadModels;
 
@@ -19,16 +20,19 @@ public class OrderSelectQueryHandler : IQueryHandler<OrderSelectQuery, OrderSele
 {
     private readonly IQueryRepository<OrderCollection> _orderRepository;
     private readonly IQueryRepository<OrderDetailCollection> _orderDetailRepository;
+    private readonly IIdentityService _identityService;
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="orderRepository"></param>
     /// <param name="orderDetailRepository"></param>
-    public OrderSelectQueryHandler(IQueryRepository<OrderCollection> orderRepository, IQueryRepository<OrderDetailCollection> orderDetailRepository)
+    /// <param name="identityService"></param>
+    public OrderSelectQueryHandler(IQueryRepository<OrderCollection> orderRepository, IQueryRepository<OrderDetailCollection> orderDetailRepository, IIdentityService identityService)
     {
         _orderRepository = orderRepository;
         _orderDetailRepository = orderDetailRepository;
+        _identityService = identityService;
     }
 
     /// <summary>
@@ -41,10 +45,18 @@ public class OrderSelectQueryHandler : IQueryHandler<OrderSelectQuery, OrderSele
     {
         var response = new OrderSelectResponse { Success = false };
         
+        var currentUserId = _identityService.GetCurrentUser().UserId;
+        
         var order = await _orderRepository.FindOneAsync(x => x.Id == request.OrderId && x.IsActive);
         if (order == null)
         {
             response.SetMessage(MessageId.I00000, "Order not found.");
+            return response;
+        }
+
+        if (order.AccountId != int.Parse(currentUserId))
+        {
+            response.SetMessage(MessageId.I00000, "You do not have permission to view this order.");
             return response;
         }
         

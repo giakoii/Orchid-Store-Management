@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatCurrency } from '@/utils/format';
 
 interface CartProps {
   readonly isOpen: boolean;
@@ -13,13 +14,6 @@ export default function Cart({ isOpen, onCloseAction }: CartProps) {
   const { cart, removeFromCart, updateQuantity, createOrder, isCreatingOrder } = useCart();
   const { isAuthenticated } = useAuth();
   const [orderResult, setOrderResult] = useState<string | null>(null);
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(price);
-  };
 
   const handleQuantityChange = (orchidId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -127,7 +121,7 @@ export default function Cart({ isOpen, onCloseAction }: CartProps) {
                     {/* Product Details */}
                     <div className="flex-1">
                       <h3 className="text-sm font-medium text-gray-900">{item.orchidName}</h3>
-                      <p className="text-sm text-gray-500">{formatPrice(item.price)}</p>
+                      <p className="text-sm text-gray-500">{formatCurrency(item.price)}</p>
 
                       {/* Quantity Controls */}
                       <div className="mt-2 flex items-center space-x-2">
@@ -157,7 +151,7 @@ export default function Cart({ isOpen, onCloseAction }: CartProps) {
                     {/* Item Total & Remove */}
                     <div className="flex flex-col items-end space-y-2">
                       <p className="text-sm font-medium text-gray-900">
-                        {formatPrice(item.price * item.quantity)}
+                        {formatCurrency(item.price * item.quantity)}
                       </p>
                       <button
                         onClick={() => removeFromCart(item.orchidId)}
@@ -180,7 +174,7 @@ export default function Cart({ isOpen, onCloseAction }: CartProps) {
               {/* Total */}
               <div className="flex justify-between text-base font-medium text-gray-900">
                 <p>Tổng cộng</p>
-                <p>{formatPrice(cart.totalAmount)}</p>
+                <p>{formatCurrency(cart.totalAmount)}</p>
               </div>
               <p className="mt-0.5 text-sm text-gray-500">
                 Phí vận chuyển sẽ được tính khi thanh toán

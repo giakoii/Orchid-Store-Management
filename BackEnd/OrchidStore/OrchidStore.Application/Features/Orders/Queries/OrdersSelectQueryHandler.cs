@@ -46,6 +46,10 @@ public class OrdersSelectQueryHandler : IQueryHandler<OrdersSelectQuery, OrdersS
         {
             orderSelects = orderSelects.Where(x => x.OrderDate == request.OrderDate.Value.Date).ToList();
         }
+        else
+        {
+            orderSelects = orderSelects.OrderByDescending(x => x.OrderDate).ToList();
+        }
         
         // Get total count
         var totalCount = orderSelects.Count();

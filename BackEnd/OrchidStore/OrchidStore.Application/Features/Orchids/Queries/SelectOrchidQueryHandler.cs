@@ -57,7 +57,6 @@ public class SelectOrchidQueryHandler : IQueryHandler<SelectOrchidQuery, SelectO
             CategoryId = orchid.CategoryId,
             CategoryName = orchid.Category.CategoryName,
             CreatedAt = orchid.CreatedAt,
-            CreatedBy = orchid.CreatedBy,
         };
 
         // True
@@ -96,5 +95,4 @@ public class SelectOrchidEntity
     public int CategoryId { get; set; }
     public string CategoryName { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
-    public string CreatedBy { get; set; } = null!;
 }

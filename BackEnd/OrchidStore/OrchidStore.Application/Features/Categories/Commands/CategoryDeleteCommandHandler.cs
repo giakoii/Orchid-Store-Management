@@ -46,10 +46,16 @@ public class CategoryDeleteCommandHandler : ICommandHandler<CategoryDeleteComman
         var userEmail = _identityService.GetCurrentUser().Email;
         
         // Validate CategoryId
-        var categoryExist = await _categoryRepository.Find(x => x.CategoryId == request.CategoryId).FirstOrDefaultAsync();
+        var categoryExist = await _categoryRepository.Find(x => x.CategoryId == request.CategoryId, includes: c => c.Orchids).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (categoryExist == null)
         {
             response.SetMessage(MessageId.I00000, "Category not found.");
+            return response;
+        }
+
+        if (categoryExist.Orchids.Any())
+        {
+            response.SetMessage(MessageId.I00000, "Category cannot be deleted because it contains orchids.");
             return response;
         }
         

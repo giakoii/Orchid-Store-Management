@@ -1,27 +1,30 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:5001/api/v1',
+  BASE_URL: 'http://localhost:5001',
   AUTH_URL: 'http://localhost:5001',
   ENDPOINTS: {
-    SELECT_ORCHIDS: '/SelectOrchids',
-    SELECT_CATEGORIES: '/SelectCategories',
-    INSERT_ACCOUNT: '/InsertAccount',
-    SELECT_ACCOUNT_PROFILE: '/SelectAccountProfile',
-    SELECT_TOKEN: '/Auth/SelectToken',
-    INSERT_ORDER: '/InsertOrder',
-    PAYMENT_CALLBACK: '/PaymentOrderCallback',
+    SELECT_ORCHIDS: '/api/v1/SelectOrchids',
+    SELECT_CATEGORIES: '/api/v1/SelectCategories',
+    INSERT_ACCOUNT: '/api/v1/InsertAccount',
+    SELECT_ACCOUNT_PROFILE: '/api/v1/SelectAccountProfile',
+    SELECT_TOKEN: '/api/v1/Auth/SelectToken',
+    INSERT_ORDER: '/api/v1/InsertOrder',
+    PAYMENT_CALLBACK: '/api/v1/PaymentOrderCallback',
     // Admin Orchid Management
-    INSERT_ORCHID: '/InsertOrchid',
-    UPDATE_ORCHID: '/UpdateOrchid',
-    DELETE_ORCHID: '/DeleteOrchid',
+    INSERT_ORCHID: '/api/v1/InsertOrchid',
+    UPDATE_ORCHID: '/api/v1/UpdateOrchid',
+    DELETE_ORCHID: '/api/v1/DeleteOrchid',
     // Admin Category Management
-    INSERT_CATEGORY: '/InsertCategory',
-    UPDATE_CATEGORY: '/UpdateCategory',
-    DELETE_CATEGORY: '/DeleteCategory',
+    INSERT_CATEGORY: '/api/v1/InsertCategory',
+    UPDATE_CATEGORY: '/api/v1/UpdateCategory',
+    DELETE_CATEGORY: '/api/v1/DeleteCategory',
     // Admin Analytics
-    ADMIN_BEST_SELLING: '/admin/SelectAdminBestSellingOrchids',
-    ADMIN_ORDERS: '/admin/SelectAdminOrders',
-    ADMIN_STATISTICS: '/admin/SelectAdminOrdersStatistics'
+    ADMIN_BEST_SELLING: '/api/v1/admin/SelectAdminBestSellingOrchids',
+    ADMIN_ORDERS: '/api/v1/admin/SelectAdminOrders',
+    ADMIN_STATISTICS: '/api/v1/admin/SelectAdminOrdersStatistics',
+    // Order History
+    SELECT_ORDERS: '/api/v1/SelectOrders',
+    SELECT_ORDER: '/api/v1/SelectOrder',
   },
   AUTH_ENDPOINTS: {
     TOKEN: '/connect/token',
