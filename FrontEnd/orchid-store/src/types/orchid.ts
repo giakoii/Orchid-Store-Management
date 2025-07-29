@@ -41,7 +41,7 @@ export interface BestSellingOrchid {
 }
 
 export interface AdminOrder {
-  orderId: number;
+  id: number;
   customerEmail: string;
   orderDate: string;
   orderStatus: string;

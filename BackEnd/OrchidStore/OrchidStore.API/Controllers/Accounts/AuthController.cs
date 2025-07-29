@@ -322,7 +322,7 @@ public class AuthController : ControllerBase
             return BadRequest(new OpenIddictResponse
             {
                 Error = Errors.ServerError,
-                ErrorDescription = "An error occurred while logging out."
+                ErrorDescription = "An error occurred while logging out." + ex.Message
             });
         }
     }

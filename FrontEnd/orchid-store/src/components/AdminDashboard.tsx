@@ -581,7 +581,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Loading admin dashboard...</p>
+          <p className="mt-4 text-lg text-gray-600">Đang tải bảng điều khiển quản trị...</p>
         </div>
       </div>
     );
@@ -593,7 +593,7 @@ export default function AdminDashboard() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Bảng Điều Khiển Quản Trị</h1>
           </div>
         </div>
       </div>
@@ -603,10 +603,10 @@ export default function AdminDashboard() {
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
             {[
-              { id: 'overview', name: 'Overview' },
-              { id: 'orchids', name: 'Orchid Management' },
-              { id: 'categories', name: 'Category Management' },
-              { id: 'orders', name: 'Order Management' }
+              { id: 'overview', name: 'Tổng Quan' },
+              { id: 'orchids', name: 'Quản Lý Hoa Lan' },
+              { id: 'categories', name: 'Quản Lý Danh Mục' },
+              { id: 'orders', name: 'Quản Lý Đơn Hàng' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -635,12 +635,12 @@ export default function AdminDashboard() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                        <span className="text-white font-bold">O</span>
+                        <span className="text-white font-bold">Đ</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Orders</dt>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Tổng Đơn Hàng</dt>
                         <dd className="text-lg font-medium text-gray-900">{stats?.totalOrders || 0}</dd>
                       </dl>
                     </div>
@@ -653,13 +653,13 @@ export default function AdminDashboard() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                        <span className="text-white font-bold">$</span>
+                        <span className="text-white font-bold">₫</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
-                        <dd className="text-lg font-medium text-gray-900">${stats?.totalRevenue || 0}</dd>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Tổng Doanh Thu</dt>
+                        <dd className="text-lg font-medium text-gray-900">{stats?.totalRevenue || 0} VNĐ</dd>
                       </dl>
                     </div>
                   </div>
@@ -671,12 +671,12 @@ export default function AdminDashboard() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                        <span className="text-white font-bold">P</span>
+                        <span className="text-white font-bold">H</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Products</dt>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Tổng Sản Phẩm</dt>
                         <dd className="text-lg font-medium text-gray-900">{orchids.length}</dd>
                       </dl>
                     </div>
@@ -689,12 +689,12 @@ export default function AdminDashboard() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                        <span className="text-white font-bold">C</span>
+                        <span className="text-white font-bold">D</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Categories</dt>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Danh Mục</dt>
                         <dd className="text-lg font-medium text-gray-900">{categories.length}</dd>
                       </dl>
                     </div>
@@ -706,7 +706,7 @@ export default function AdminDashboard() {
             {/* Best Selling Orchids */}
             <div className="bg-white shadow rounded-lg">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Best Selling Orchids</h3>
+                <h3 className="text-lg font-medium text-gray-900">Hoa Lan Bán Chạy Nhất</h3>
               </div>
               <div className="p-6">
                 {Array.isArray(bestSelling) && bestSelling.length > 0 ? (
@@ -715,16 +715,16 @@ export default function AdminDashboard() {
                       <div key={item.orchidId} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
                           <h4 className="font-medium text-gray-900">{item.orchidName}</h4>
-                          <p className="text-sm text-gray-500">Total Sold: {item.totalSold}</p>
+                          <p className="text-sm text-gray-500">Đã bán: {item.totalSold}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-gray-900">${item.totalRevenue}</p>
+                          <p className="font-medium text-gray-900">{item.totalRevenue} VNĐ</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500">No best selling data available</p>
+                  <p className="text-gray-500">Không có dữ liệu bán chạy</p>
                 )}
               </div>
             </div>
@@ -734,7 +734,7 @@ export default function AdminDashboard() {
         {activeTab === 'orchids' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">Orchid Management</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Quản Lý Hoa Lan</h2>
               <button
                 onClick={() => {
                   setActiveTab('orchids');
@@ -743,7 +743,7 @@ export default function AdminDashboard() {
                 }}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
               >
-                + Add New Orchid
+                + Thêm Hoa Lan Mới
               </button>
             </div>
 
@@ -753,22 +753,22 @@ export default function AdminDashboard() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
+                        Tên
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Description
+                        Mô Tả
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Price
+                        Giá
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Category
+                        Danh Mục
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Natural
+                        Tự Nhiên
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Hành Động
                       </th>
                     </tr>
                   </thead>
@@ -789,7 +789,7 @@ export default function AdminDashboard() {
                             {getCategoryName(orchid.categoryId)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {orchid.isNatural ? 'Yes' : 'No'}
+                            {orchid.isNatural ? 'Có' : 'Không'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                             <button
@@ -807,13 +807,13 @@ export default function AdminDashboard() {
                               }}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Edit
+                              Chỉnh Sửa
                             </button>
                             <button
                               onClick={() => deleteOrchid(orchid.orchidId)}
                               className="text-red-600 hover:text-red-900"
                             >
-                              Delete
+                              Xóa
                             </button>
                           </td>
                         </tr>
@@ -821,7 +821,7 @@ export default function AdminDashboard() {
                     ) : (
                       <tr>
                         <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                          No orchids found
+                          Không tìm thấy hoa lan
                         </td>
                       </tr>
                     )}
@@ -870,7 +870,7 @@ export default function AdminDashboard() {
         {activeTab === 'categories' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">Category Management</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Quản Lý Danh Mục</h2>
               <button
                 onClick={() => {
                   setActiveTab('categories');
@@ -879,7 +879,7 @@ export default function AdminDashboard() {
                 }}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
               >
-                + Add New Category
+                + Thêm Danh Mục Mới
               </button>
             </div>
 
@@ -892,13 +892,13 @@ export default function AdminDashboard() {
                         ID
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
+                        Tên
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Parent Category
+                        Danh Mục Cha
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Hành Động
                       </th>
                     </tr>
                   </thead>
@@ -927,13 +927,13 @@ export default function AdminDashboard() {
                               }}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Edit
+                              Chỉnh Sửa
                             </button>
                             <button
                               onClick={() => deleteCategory(category.categoryId)}
                               className="text-red-600 hover:text-red-900"
                             >
-                              Delete
+                              Xóa
                             </button>
                           </td>
                         </tr>
@@ -941,7 +941,7 @@ export default function AdminDashboard() {
                     ) : (
                       <tr>
                         <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
-                          No categories found
+                          Không tìm thấy danh mục
                         </td>
                       </tr>
                     )}
@@ -989,7 +989,7 @@ export default function AdminDashboard() {
 
         {activeTab === 'orders' && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Order Management</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Quản Lý Đơn Hàng</h2>
 
             <div className="bg-white shadow rounded-lg overflow-hidden">
               <div className="overflow-x-auto">
@@ -997,34 +997,34 @@ export default function AdminDashboard() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
+                        Mã Đơn Hàng
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Customer
+                        Khách Hàng
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
+                        Ngày Đặt
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
+                        Trạng Thái
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
+                        Tổng Tiền
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {Array.isArray(orders) && orders.length > 0 ? (
                       orders.map((order) => (
-                        <tr key={order.orderId}>
+                        <tr key={order.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            #{order.orderId}
+                            #{order.id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {order.customerEmail}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(order.orderDate).toLocaleDateString()}
+                            {new Date(order.orderDate).toLocaleDateString('vi-VN')}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -1032,18 +1032,21 @@ export default function AdminDashboard() {
                               order.orderStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
                               'bg-red-100 text-red-800'
                             }`}>
-                              {order.orderStatus}
+                              {order.orderStatus === 'Completed' ? 'Hoàn Thành' :
+                               order.orderStatus === 'Pending' ? 'Đang Xử Lý' :
+                               order.orderStatus === 'Processing' ? 'Đang Xử Lý' :
+                               order.orderStatus === 'Cancelled' ? 'Đã Hủy' : order.orderStatus}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ${order.totalAmount}
+                            {order.totalAmount} VNĐ
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
                         <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                          No orders found
+                          Không tìm thấy đơn hàng
                         </td>
                       </tr>
                     )}
@@ -1061,13 +1064,13 @@ export default function AdminDashboard() {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                {editingItem ? 'Edit' : 'Add'} {activeTab === 'orchids' ? 'Orchid' : 'Category'}
+                {editingItem ? 'Chỉnh Sửa' : 'Thêm'} {activeTab === 'orchids' ? 'Hoa Lan' : 'Danh Mục'}
               </h3>
 
               {activeTab === 'orchids' ? (
                 <form onSubmit={handleOrchidSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                    <label className="block text-sm font-medium text-gray-700">Tên Hoa Lan</label>
                     <input
                       type="text"
                       value={orchidForm.orchidName}
@@ -1077,7 +1080,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Description</label>
+                    <label className="block text-sm font-medium text-gray-700">Mô Tả</label>
                     <textarea
                       value={orchidForm.orchidDescription}
                       onChange={(e) => setOrchidForm({...orchidForm, orchidDescription: e.target.value})}
@@ -1087,7 +1090,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Price</label>
+                    <label className="block text-sm font-medium text-gray-700">Giá (VNĐ)</label>
                     <input
                       type="number"
                       step="0.01"
@@ -1098,14 +1101,14 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Category</label>
+                    <label className="block text-sm font-medium text-gray-700">Danh Mục</label>
                     <select
                       value={orchidForm.categoryId}
                       onChange={(e) => setOrchidForm({...orchidForm, categoryId: e.target.value})}
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                       required
                     >
-                      <option value="">Select a category</option>
+                      <option value="">Chọn danh mục</option>
                       {categories.map((category) => (
                         <option key={category.categoryId} value={category.categoryId.toString()}>
                           {category.categoryName}
@@ -1121,11 +1124,11 @@ export default function AdminDashboard() {
                         onChange={(e) => setOrchidForm({...orchidForm, isNatural: e.target.checked})}
                         className="mr-2"
                       />
-                      <span className="text-sm font-medium text-gray-700">Is Natural</span>
+                      <span className="text-sm font-medium text-gray-700">Hoa Lan Tự Nhiên</span>
                     </label>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Image</label>
+                    <label className="block text-sm font-medium text-gray-700">Hình Ảnh</label>
                     <input
                       type="file"
                       accept="image/*"
@@ -1139,7 +1142,7 @@ export default function AdminDashboard() {
                       type="submit"
                       className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
                     >
-                      {editingItem ? 'Update' : 'Add'} Orchid
+                      {editingItem ? 'Cập Nhật' : 'Thêm'} Hoa Lan
                     </button>
                     <button
                       type="button"
@@ -1149,14 +1152,14 @@ export default function AdminDashboard() {
                       }}
                       className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
                     >
-                      Cancel
+                      Hủy
                     </button>
                   </div>
                 </form>
               ) : (
                 <form onSubmit={handleCategorySubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Category Name</label>
+                    <label className="block text-sm font-medium text-gray-700">Tên Danh Mục</label>
                     <input
                       type="text"
                       value={categoryForm.categoryName}
@@ -1166,13 +1169,13 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Parent Category (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700">Danh Mục Cha (Tùy chọn)</label>
                     <select
                       value={categoryForm.parentCategoryId}
                       onChange={(e) => setCategoryForm({...categoryForm, parentCategoryId: e.target.value})}
                       className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                     >
-                      <option value="">-- No Parent Category --</option>
+                      <option value="">-- Không có danh mục cha --</option>
                       {categories.map((category) => (
                         <option key={category.categoryId} value={category.categoryId.toString()}>
                           {category.categoryName}
@@ -1185,7 +1188,7 @@ export default function AdminDashboard() {
                       type="submit"
                       className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
                     >
-                      {editingItem ? 'Update' : 'Add'} Category
+                      {editingItem ? 'Cập Nhật' : 'Thêm'} Danh Mục
                     </button>
                     <button
                       type="button"
@@ -1195,7 +1198,7 @@ export default function AdminDashboard() {
                       }}
                       className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
                     >
-                      Cancel
+                      Hủy
                     </button>
                   </div>
                 </form>

@@ -21,6 +21,16 @@ export default function HomePage() {
     const [totalCount, setTotalCount] = useState(0);
     const [pageSize] = useState(12); // 12 orchids per page
 
+    // Filter state
+    const [filters, setFilters] = useState({
+        categoryId: null as number | null,
+        isNatural: null as boolean | null,
+        minPrice: '' as string,
+        maxPrice: '' as string,
+        searchName: '' as string
+    });
+    const [showFilters, setShowFilters] = useState(false);
+
     // Cart functionality
     const { addToCart } = useCart();
     const [addingToCart, setAddingToCart] = useState<number | null>(null);
@@ -41,16 +51,25 @@ export default function HomePage() {
         }
     };
 
-    // Fetch orchids
-    const fetchOrchids = async (categoryId?: number, page: number = 1) => {
+    // Fetch orchids with filters
+    const fetchOrchids = async (page: number = 1, applyFilters: boolean = false) => {
         try {
             setLoading(true);
             const params: Record<string, string | number> = {
                 pageNumber: page,
                 pageSize: pageSize
             };
-            if (categoryId) {
-                params.CategoryId = categoryId;
+
+            // Apply filters
+            if (applyFilters) {
+                if (filters.categoryId) params.CategoryId = filters.categoryId;
+                if (filters.isNatural !== null) params.IsNatural = filters.isNatural.toString();
+                if (filters.minPrice) params.MinPrice = parseFloat(filters.minPrice);
+                if (filters.maxPrice) params.MaxPrice = parseFloat(filters.maxPrice);
+                if (filters.searchName) params.SearchName = filters.searchName;
+            } else {
+                // Use legacy category filter for backward compatibility
+                if (selectedCategory) params.CategoryId = selectedCategory;
             }
 
             const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.SELECT_ORCHIDS, params));
@@ -77,13 +96,13 @@ export default function HomePage() {
     const handleCategoryChange = (categoryId: number | null) => {
         setSelectedCategory(categoryId);
         setCurrentPage(1); // Reset to first page when changing category
-        fetchOrchids(categoryId || undefined, 1);
+        fetchOrchids(1, false);
     };
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
-            fetchOrchids(selectedCategory || undefined, page);
+            fetchOrchids(page, false);
             // Scroll to top when page changes
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -100,40 +119,236 @@ export default function HomePage() {
         }
     };
 
+    // Handle filter changes
+    const handleFilterChange = (filterType: string, value: any) => {
+        setFilters(prev => ({
+            ...prev,
+            [filterType]: value
+        }));
+    };
+
+    // Apply filters
+    const applyFilters = () => {
+        setCurrentPage(1);
+        fetchOrchids(1, true);
+    };
+
+    // Clear filters
+    const clearFilters = () => {
+        setFilters({
+            categoryId: null,
+            isNatural: null,
+            minPrice: '',
+            maxPrice: '',
+            searchName: ''
+        });
+        setSelectedCategory(null);
+        setCurrentPage(1);
+        fetchOrchids(1, false);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white">
             {/* Header with Auth */}
             <Header />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Category Filter */}
-                <div className="mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Danh mục</h2>
-                    <div className="flex flex-wrap gap-3">
-                        <button
-                            onClick={() => handleCategoryChange(null)}
-                            className={`px-6 py-3 rounded-full transition-all duration-300 ${
-                                selectedCategory === null
-                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105'
-                                    : 'bg-white text-gray-700 border border-purple-200 hover:border-purple-400 hover:bg-purple-50'
-                            }`}
-                        >
-                            Tất cả
-                        </button>
-                        {categories.map((category) => (
+                {/* Advanced Filters */}
+                <div className="mb-8 bg-white rounded-2xl shadow-md overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-gray-800">Bộ lọc nâng cao</h3>
                             <button
-                                key={category.categoryId}
-                                onClick={() => handleCategoryChange(category.categoryId)}
-                                className={`px-6 py-3 rounded-full transition-all duration-300 ${
-                                    selectedCategory === category.categoryId
-                                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105'
-                                        : 'bg-white text-gray-700 border border-purple-200 hover:border-purple-400 hover:bg-purple-50'
-                                }`}
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="flex items-center space-x-2 text-purple-600 hover:text-purple-800 transition-colors"
                             >
-                                {category.categoryName}
+                                <span>{showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc'}</span>
+                                <svg
+                                    className={`w-5 h-5 transform transition-transform ${showFilters ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </button>
-                        ))}
+                        </div>
                     </div>
+
+                    {showFilters && (
+                        <div className="p-6 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {/* Search Name */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Tìm kiếm theo tên
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={filters.searchName}
+                                        onChange={(e) => handleFilterChange('searchName', e.target.value)}
+                                        placeholder="Nhập tên hoa lan..."
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+
+                                {/* Category Filter */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Danh mục
+                                    </label>
+                                    <select
+                                        value={filters.categoryId || ''}
+                                        onChange={(e) => handleFilterChange('categoryId', e.target.value ? parseInt(e.target.value) : null)}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                    >
+                                        <option value="">Tất cả danh mục</option>
+                                        {categories.map((category) => (
+                                            <option key={category.categoryId} value={category.categoryId}>
+                                                {category.categoryName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Natural Type Filter */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Loại hoa lan
+                                    </label>
+                                    <select
+                                        value={filters.isNatural === null ? '' : filters.isNatural.toString()}
+                                        onChange={(e) => handleFilterChange('isNatural', e.target.value === '' ? null : e.target.value === 'true')}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                    >
+                                        <option value="">Tất cả loại</option>
+                                        <option value="true">Tự nhiên</option>
+                                        <option value="false">Lai tạo</option>
+                                    </select>
+                                </div>
+
+                                {/* Min Price */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Giá tối thiểu (VNĐ)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={filters.minPrice}
+                                        onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                                        placeholder="0"
+                                        min="0"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+
+                                {/* Max Price */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Giá tối đa (VNĐ)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={filters.maxPrice}
+                                        onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                                        placeholder="999999999"
+                                        min="0"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Filter Actions */}
+                            <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+                                <button
+                                    onClick={applyFilters}
+                                    className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-md"
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                        </svg>
+                                        <span>Áp dụng bộ lọc</span>
+                                    </div>
+                                </button>
+                                <button
+                                    onClick={clearFilters}
+                                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300"
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        <span>Xóa bộ lọc</span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            {/* Active Filters Display */}
+                            {(filters.searchName || filters.categoryId || filters.isNatural !== null || filters.minPrice || filters.maxPrice) && (
+                                <div className="pt-4 border-t border-gray-200">
+                                    <h4 className="text-sm font-medium text-gray-700 mb-3">Bộ lọc đang áp dụng:</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {filters.searchName && (
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                Tên: "{filters.searchName}"
+                                                <button
+                                                    onClick={() => handleFilterChange('searchName', '')}
+                                                    className="ml-2 text-purple-600 hover:text-purple-800"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                        {filters.categoryId && (
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Danh mục: {categories.find(c => c.categoryId === filters.categoryId)?.categoryName}
+                                                <button
+                                                    onClick={() => handleFilterChange('categoryId', null)}
+                                                    className="ml-2 text-blue-600 hover:text-blue-800"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                        {filters.isNatural !== null && (
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Loại: {filters.isNatural ? 'Tự nhiên' : 'Lai tạo'}
+                                                <button
+                                                    onClick={() => handleFilterChange('isNatural', null)}
+                                                    className="ml-2 text-green-600 hover:text-green-800"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                        {filters.minPrice && (
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                Giá tối thiểu: {formatCurrency(parseFloat(filters.minPrice))}
+                                                <button
+                                                    onClick={() => handleFilterChange('minPrice', '')}
+                                                    className="ml-2 text-yellow-600 hover:text-yellow-800"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                        {filters.maxPrice && (
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Giá tối đa: {formatCurrency(parseFloat(filters.maxPrice))}
+                                                <button
+                                                    onClick={() => handleFilterChange('maxPrice', '')}
+                                                    className="ml-2 text-red-600 hover:text-red-800"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Loading State */}
